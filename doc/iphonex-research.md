@@ -13,7 +13,7 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 竖直方向增加145pt(近20%)的显示区域，具体来说：
 - 顶部statusbar增加24pt，总高达44pt（包含高度30pt的`刘海`，详见下面statusbar区域图）
 - 底部tabbar占34pt（home键指示区域，此区域可以透视页面内容，但不能响应交互）
-- 剩余86pt就是方正的纯内容显示区域
+- 剩余87pt就是方正的纯内容显示区域
 
 ## 区域划分
 区域主要划分成三部分：头部statusbar、安全区域、底部tabbar(home键指示区域)
@@ -33,7 +33,12 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 - 横屏(这个基本就无法接受了)  
 ![](./images/landscape.jpg)
 
-可以通过`padding-*: safe-area-inset-*`解决遮挡问题，
+可以通过`padding-*: safe-area-inset-*`解决遮挡问题。
+
+- 竖屏铺满全屏后如下图：  
+![](./images/max-safe-areas-insets.png)
+- 横屏屏铺满全屏后如下图：  
+![](./images/safe-area-constants.png)
 
 ## 留白问题
 内容渲染到安全区域，其他区域会用`body`或者`html`的`background-color`填充，如果都没有则填充白色。
@@ -52,10 +57,6 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 同理，吸底元素也会有同样的问题。
 此问题，通过`viewport-fit:cover + padding-*: safe-area-inset-*`将内容覆盖整个屏幕，并设置合适的边距解决
 
-- 竖屏铺满全屏后如下图：  
-![](./images/max-safe-areas-insets.png)
-- 横屏屏铺满全屏后如下图：  
-![](./images/safe-area-constants.png)
 
 ## WebView
 WebView有两种: UIWebView和WkWebView，WkWebView在iOS8中新增，用于替代性能比较差的UIWebView。

@@ -26,20 +26,6 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 
 - tabbar区域(此区域内容可以透视展现，但不可做点击之类的交互)  
 
-## 遮挡问题
-- 竖屏(尚可接受，因为浏览器处理了statusbar，WebView模式下面单独说)  
-![](./images/portrait.jpg)
-
-- 横屏(这个基本就无法接受了)  
-![](./images/landscape.jpg)
-
-可以通过`padding-*: safe-area-inset-*`解决遮挡问题。
-
-- 竖屏铺满全屏后如下图：  
-![](./images/max-safe-areas-insets.png)
-- 横屏屏铺满全屏后如下图：  
-![](./images/safe-area-constants.png)
-
 ## 留白问题
 内容渲染到安全区域，其他区域会用`body`或者`html`的`background-color`填充，如果都没有则填充白色。
 这个有两种解决办法：
@@ -57,6 +43,28 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 同理，吸底元素也会有同样的问题。
 此问题，通过`viewport-fit:cover + padding-*: safe-area-inset-*`将内容覆盖整个屏幕，并设置合适的边距解决
 
+## 遮挡问题
+通过`viewport-fit:cover`内容延伸到全屏后，所引入的问题就是顶部`刘海`和底部home键的遮挡问题。
+- 竖屏(尚可接受，因为浏览器处理了statusbar，WebView模式下面单独说)  
+![](./images/portrait.jpg)
+
+- 横屏(这个基本就无法接受了)  
+![](./images/landscape.jpg)
+
+可以通过`padding-*: safe-area-inset-*`解决遮挡问题。
+
+```css
+@supports(padding: max(0px)) {
+  body {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+}
+```
+- 增加padding后竖屏如下图：  
+![](./images/max-safe-areas-insets.png)
+- 增加padding后横屏如下图：  
+![](./images/safe-area-constants.png)
 
 ## WebView
 WebView有两种: UIWebView和WkWebView，WkWebView在iOS8中新增，用于替代性能比较差的UIWebView。

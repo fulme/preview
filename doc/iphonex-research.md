@@ -73,7 +73,12 @@ WebView有两种: UIWebView和WkWebView，WkWebView在iOS8中新增，用于替�
 
 下面是两种WebView的对比：  
 ![](./images/UIWebView-WkWebView.png)  
-`WkWebView可以将内容覆盖到全屏，UIWebView只能限定在安全区域。`
+*WkWebView可以将内容覆盖到全屏，UIWebView只能限定在安全区域。*
+
+*PS：iOS微信6.5.3版本开始支持开发者手动切换WKWebview和UIWebview。
+在微信会话列表页点击右上角“加号按钮”，选择菜单中的”添加朋友”，
+在添加朋友界面的搜索框中输入字符串：“:switchweb”，再点击键盘右下角搜索按钮。
+切换成功后会提示当前使用的内核是UIWebview或是WKWebview。*
 
 ## 写在最后
 从前端的角度，针对iphoneX带来的问题需要做的工作如下：

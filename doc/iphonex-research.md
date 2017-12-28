@@ -63,7 +63,7 @@ WebView有两种: UIWebView和WkWebView，WkWebView在iOS8中新增，用于替�
 但并非所有的客户端都全部升级了，而且也不一定会升级，所以两者肯能会长期并存。  
 **注意：UIWebView不支持`viewport-fit`，所以吸顶/底的问题只能通过客户端解决。**
 
-下面是两种WebView的对比(左边是UIWebView，右边是WkWebView)：  
+下面是两种WebView的对比：  
 ![](./images/UIWebView-WkWebView.png)  
 `WkWebView可以将内容覆盖到全屏，UIWebView只能限定在安全区域。`
 

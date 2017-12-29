@@ -29,7 +29,6 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 ## safari
 竖屏情况下不管有没有`viewport-fit: cover`，显示效果没有区别，内容限定在安全区域。
 ![](./images/safari-portrain-default.png)
-![](./images/safari-landscape-default.png)
 
 横屏情况默认显示在安全区域，但设置`viewport-fit: cover`后，遮挡问题就比较明显了
 ![](./images/safari-landscape-default.png)
@@ -39,7 +38,7 @@ iphoneX宽高比是9:19.5, 之前的iphone是9:16，下图是iphone8/X的屏幕�
 WebView主要有两种: UIWebView和WkWebView，WkWebView在iOS8中新增，用于替代性能比较差的UIWebView。
 但并非所有的客户端都全部升级了，而且也不一定会升级，所以两者肯能会长期并存。  
 
-1. UIWebView
+1. UIWebView  
 UIWebView是很早以前提供的组件了，自行编写代码实测与之前别人写的介绍及截图表现已知，详见下面的截图。
 - 竖屏  
 ![](./images/UIWebView-portrain.png)  
@@ -48,7 +47,7 @@ UIWebView是很早以前提供的组件了，自行编写代码实测与之前�
 问题：内容限定在安全区域，但statusbar和home bar会透视溢出内容，且不能通过`viewport-fit: cover`实现全屏
 方案：客户端把安全区域拓展到全屏（有对应的接口），页面通过padding或者占位元素处理遮挡问题
 
-2. WkWebView
+2. WkWebView  
 WkWebView的表现一直在变化中，看了之前别人写的一些文档都是说默认会将内容渲染在安全区域，通过`viewport-fit: cover`可以铺满全屏显示，表现跟safari一致。
 但通过自行编写代码，用WkWebView加载页面，结果默认铺满全屏显示，如下图所示。
 - 竖屏  

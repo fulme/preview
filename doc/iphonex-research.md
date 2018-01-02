@@ -57,6 +57,72 @@ WkWebView的表现一直在变化中，看了之前别人写的一些文档都�
 问题：吸顶元素会被statusbar遮挡，吸底元素会被home bar遮挡
 方案：通过padding或者站位元素处理遮挡
 
+3. swift3测试代码
+- WkWebView测试代码  
+```swift3
+import UIKit
+import WebKit
+
+class ViewController: UIViewController, WKNavigationDelegate {
+    @IBOutlet var containerView: UIView!
+    var webView: WKWebView?
+    
+    override func loadView() {
+        super.loadView()
+        
+        self.webView = WKWebView(frame: self.view.frame)
+        self.view = self.webView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        var url = URL(string: "https://ai.58.com/#/")
+        
+        var req = URLRequest(url: url!)
+        self.webView?.load(req)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+}
+```
+
+- UIWebView测试代码  
+```swift3
+// ViewController.swift
+import UIKit
+import WebKit
+
+class ViewController: UIViewController, WKNavigationDelegate {
+    @IBOutlet var containerView: UIView!
+    var webView: UIWebView?
+    
+    override func loadView() {
+        super.loadView()
+        
+        self.webView = UIWebView(frame: self.view.frame)
+        self.view = self.webView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        var url = URL(string: "https://ai.58.com/#/")
+        
+        var req = URLRequest(url: url!)
+        self.webView?.loadRequest(req)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+}
+```
+
 ## 留白问题
 当内容渲染到安全区域（默认safari及UIWebView），其他区域会用`body`或者`html`的`background-color`填充，如果都没有则填充白色。
 这个有两种解决办法：

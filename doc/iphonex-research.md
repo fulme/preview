@@ -58,8 +58,9 @@ WkWebView的表现一直在变化中，看了之前别人写的一些文档都�
 方案：通过padding或者站位元素处理遮挡
 
 3. swift3测试代码
+
 - WkWebView测试代码  
-```swift3
+```
 import UIKit
 import WebKit
 
@@ -85,14 +86,12 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }
 ```
 
 - UIWebView测试代码  
-```swift3
-// ViewController.swift
+```
 import UIKit
 import WebKit
 
@@ -118,7 +117,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }
 ```

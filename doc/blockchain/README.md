@@ -153,8 +153,9 @@ Bloom过滤器不需要提供地址，只需要提供M种散列算法及长度�
 ![](transaction.png)
 
 ### 交易结构
+
 |名称|字节数|数据类型|描述|
-|-|-|-|-|
+-|-|-|-
 |version|4|int_32|版本号，目前为1，如果程序使用的是新的规则集生成的交易，版本号可能是其他|
 |tx_in count|变量|compactSize uint|交易的输入数量，类型是一种内部自定的数字编码结构|
 |tx_in|变量|txIn|交易的输入集合，每一个输入有其特定的数据结构|
@@ -163,16 +164,18 @@ Bloom过滤器不需要提供地址，只需要提供M种散列算法及长度�
 |lock_time|4|uint32_t|时间戳或者区块高度，<=500万就是区块高度，否则就是时间戳|
 
 ### 交易输入
+
 |名称|字节数|数据类型|描述|
-|-|-|-|-|
+-|-|-|-
 |previous_output|36|outpoint|前一个交易的输出（32字节hash+4字节索引）|
 |script bytes|变量|compactSize uint|解锁脚本的长度，最大10KB|
 |signature script|变量|char[]|解锁脚本|
 |sequence|4|uint32_t|序列，目前是固定的ffffffff|
 
 ### 交易输出
+
 |名称|字节数|数据类型|描述|
-|-|-|-|-|
+-|-|-|-
 |value|8|int64_t|转移的数量，单位聪|
 |pk_script bytes|变量|compactSize uint|解锁条件（一段脚本）长度|
 |pk_script|变量|char[]|花销这笔比特币所需要的解锁条件（一段脚本）|

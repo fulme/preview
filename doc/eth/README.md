@@ -63,7 +63,7 @@
 ```
 
 ### 创始块配置
-`genesis.json`
+`genesis.json`文件配置`xx币`的初始发币数量及分配比例等属性。
 ```json
   {
     "alloc": {
@@ -133,6 +133,7 @@
 应用程序可以通过`rpcApi`接口，控制节点账号，需要将钱包私钥拷贝到节点目录下的`keystore`目录下，
 这样应用程序就可以只提供私钥的密码而不需要保存私钥，就可以实现对该账号的转账、付款等操作。
 下面是一个后台`nodejs`应用程序控制节点账户的例子：
+
 ```js
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -153,9 +154,7 @@ app.post('/transfer', (req, res) => {
   }
 
   web3.personal.unlockAccount(coinbase, pwd, (err, uares) => {
-    if (err) {
-      console.log(err, uares);
-    } else {
+    if (!err) {
       users.forEach((user) => {
         web3.eth.sendTransaction({
           from: coinbase,
@@ -294,6 +293,6 @@ contract ERC721 {
 ## 合约部署
 用`solidity`编写的合约还是高级语言代码，要部署到以太坊网络，需要一些列的编译、转换。
 好在已经有很多现成的工具，可以很方便地自动完成这个复杂的过程。
-部署的方式很多，下面介绍一种简单易用的部署方式：[在线部署](http://remix.ethereum.org/#optimize=false&version=builtin)。
+部署的方式很多，下面介绍一种简单易用的部署方式：[在线部署](http://remix.ethereum.org/#optimize=false&version=builtin)，如果无法访问，可以[在本地启server](https://github.com/ethereum/remix-ide)。
 以太坊网络上的交易是需要消耗`gas`的（即以太币），所以需要拥有控制权的以太坊账号，对于普通用户这里需要安装一个[metamask浏览器插件](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)。
 部署合约其实就是发起一个交易，所以需要钱包授权花费的`gas`，合约部署以后会生成一个合约地址，在在线编辑器上可以通过合约地址查看合约的状态及接口调用。

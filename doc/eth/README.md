@@ -180,9 +180,9 @@ app.post('/transfer', (req, res) => {
 举个栗子，一个人可能有一个存储合约，形式为“A可以每天最多提现X个币，B每天最多Y个，A和B一起可以随意提取，A可以停掉B的提现权”。
 
 ## solidity简介
-`solidity`是目前官网推崇的编写智能合约的高级语言。语法类似于`javascript`。详细语法、API参见：[官网](http://solidity.readthedocs.io/en/v0.4.13/)
-快速入门推荐：[手把手教程](https://cryptozombies.io/)
-可以用任何文本编辑器编写`solidity`代码，不过推荐使用官方[remix](https://remix.ethereum.org/)，除了有各平台的IDE客户端外，
+`solidity`是目前官网推崇的编写智能合约的高级语言。语法类似于`javascript`。
+详细语法、API参见：[官网](http://solidity.readthedocs.io/en/v0.4.13/) ，快速入门推荐：[手把手教程](https://cryptozombies.io/)
+可以用任何文本编辑器编写`solidity`代码，推荐使用官方[remix](https://remix.ethereum.org/)，除了有各平台的IDE客户端外，
 其[在线编辑器](http://remix.ethereum.org/#optimize=false&version=builtin)非常方便且强大，可以直接在线部署和接口调用（需要安装[metamsk浏览器插件](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)）。
 
 ## 智能合约示例

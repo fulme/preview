@@ -6,7 +6,7 @@
   - 源码编译
   - 节点部署
     - 准备账号
-    - 创始区块配置
+    - 创始块配置
     - 初始化节点
     - 运行节点
     - 节点互联
@@ -18,9 +18,13 @@
     - ERC-20
     - ERC-721
   - 合约部署
+  - 合约升级
+- ICO
+  - 山寨币
+  - 代币
 
 # 以太坊简介
-以太坊是一个开源的有智能合约功能的公共区块链平台，通过其专用加密货币以太币提供去中心化的虚拟机来处理点对点合约。
+以太坊是一个开源的有智能合约功能的公共区块链平台，通过其专用加密货币（以太币）提供去中心化的虚拟机来处理点对点合约。
 其核心技术类似于比特币，可参考[比特币核心架构](https://github.com/fulme/preview/blob/master/doc/blockchain/README.md)。
 以太坊通常被称为区块链-2.0应用，相对于比特币网络，主要有一下几个方面的升级、改造。
 
@@ -32,7 +36,7 @@
   
 - 图灵完备
   比特币为了防止程序无限循环，对脚本语言做了严格的限制，只能使用非常有限的操作。
-  以太坊脚本是图灵完备的，通过引入`gas`解决无限循环问题，理论上可以实现任何逻辑的状态转换。
+  以太坊脚本是图灵完备的，通过引入`gas`解决无限循环问题，理论上可以实现任何可计算的状态转换。
 
 # 网络部署
 ## 源码编译
@@ -296,3 +300,178 @@ contract ERC721 {
 部署的方式很多，下面介绍一种简单易用的部署方式：[在线部署](http://remix.ethereum.org/#optimize=false&version=builtin)，如果无法访问，可以[在本地启server](https://github.com/ethereum/remix-ide)。
 以太坊网络上的交易是需要消耗`gas`的（即以太币），所以需要拥有控制权的以太坊账号，对于普通用户这里需要安装一个[metamask浏览器插件](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)。
 部署合约其实就是发起一个交易，所以需要钱包授权花费的`gas`，合约部署以后会生成一个合约地址，在在线编辑器上可以通过合约地址查看合约的状态及接口调用。
+
+## 合约升级
+区块链给人的第一感觉就是不可篡改，但是人都有控制欲，关键是是代码就会有bug。
+以太坊网络，智能合约也都是由运行的代码，谁能保证没有问题呢？
+所以合约的升级势在必行，大概需要两个步骤：
+- 暂停合约执行
+```solidity
+contract Pausable is Ownable {
+  event Pause();
+  event Unpause();
+
+  bool public paused = false;
+
+  modifier whenNotPaused() {
+    require(!paused);
+    _;
+  }
+
+  modifier whenPaused {
+    require(paused);
+    _;
+  }
+
+  function pause() onlyOwner whenNotPaused returns (bool) {
+    paused = true;
+    Pause();
+    return true;
+  }
+
+  function unpause() onlyOwner whenPaused returns (bool) {
+    paused = false;
+    Unpause();
+    return true;
+  }
+}
+```
+
+- 修改合约地址
+```solidity
+contract KittyCore is KittyMinting {
+    // Set in case the core contract is broken and an upgrade is required
+    address public newContractAddress;
+
+    /// @notice Creates the main CryptoKitties smart contract instance.
+    function KittyCore() public {
+        // Starts paused.
+        paused = true;
+
+        // the creator of the contract is the initial CEO
+        ceoAddress = msg.sender;
+
+        // the creator of the contract is also the initial COO
+        cooAddress = msg.sender;
+
+        // start with the mythical kitten 0 - so we don't have generation-0 parent issues
+        _createKitty(0, 0, 0, uint256(-1), address(0));
+    }
+    function setNewAddress(address _v2Address) external onlyCEO whenPaused {
+        // See README.md for updgrade plan
+        newContractAddress = _v2Address;
+        ContractUpgrade(_v2Address);
+    }
+
+    /// @dev Override unpause so it requires all external contract addresses
+    ///  to be set before contract can be unpaused. Also, we can't have
+    ///  newContractAddress set either, because then the contract was upgraded.
+    /// @notice This is public rather than external so we can call super.unpause
+    ///  without using an expensive CALL.
+    function unpause() public onlyCEO whenPaused {
+        require(saleAuction != address(0));
+        require(siringAuction != address(0));
+        require(geneScience != address(0));
+        require(newContractAddress == address(0));
+
+        // Actually unpause the contract.
+        super.unpause();
+    }
+}
+```
+
+## ICO
+- 山寨币
+```json
+  {
+      "alloc": {
+        "a28be83e73e67728fe28ea1e775e81bcaf9012c0": {
+          "balance": "12000000000000000000000000000"
+        }
+      },
+      "config": {
+         "chainID": 72,
+         "homesteadBlock": 0,
+         "eip155Block": 0,
+         "eip158Block": 0
+       },
+       "nonce": "0x0000000000000000",
+       "difficulty": "0x4000",
+       "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+       "coinbase": "0x0000000000000000000000000000000000000000",
+       "timestamp": "0x00",
+       "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+       "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
+       "gasLimit": "0xffffffff"
+  }
+```
+- 代币
+```solidity
+contract KittyMinting is KittyAuction {
+
+    // Limits the number of cats the contract owner can ever create.
+    uint256 public constant PROMO_CREATION_LIMIT = 5000;
+    uint256 public constant GEN0_CREATION_LIMIT = 45000;
+
+    // Constants for gen0 auctions.
+    uint256 public constant GEN0_STARTING_PRICE = 10 finney;
+    uint256 public constant GEN0_AUCTION_DURATION = 1 days;
+
+    // Counts the number of cats the contract owner has created.
+    uint256 public promoCreatedCount;
+    uint256 public gen0CreatedCount;
+
+    /// @dev we can create promo kittens, up to a limit. Only callable by COO
+    /// @param _genes the encoded genes of the kitten to be created, any value is accepted
+    /// @param _owner the future owner of the created kittens. Default to contract COO
+    function createPromoKitty(uint256 _genes, address _owner) external onlyCOO {
+        address kittyOwner = _owner;
+        if (kittyOwner == address(0)) {
+             kittyOwner = cooAddress;
+        }
+        require(promoCreatedCount < PROMO_CREATION_LIMIT);
+
+        promoCreatedCount++;
+        _createKitty(0, 0, 0, _genes, kittyOwner);
+    }
+
+    /// @dev Creates a new gen0 kitty with the given genes and
+    ///  creates an auction for it.
+    function createGen0Auction(uint256 _genes) external onlyCOO {
+        require(gen0CreatedCount < GEN0_CREATION_LIMIT);
+
+        uint256 kittyId = _createKitty(0, 0, 0, _genes, address(this));
+        _approve(kittyId, saleAuction);
+
+        saleAuction.createAuction(
+            kittyId,
+            _computeNextGen0Price(),
+            0,
+            GEN0_AUCTION_DURATION,
+            address(this)
+        );
+
+        gen0CreatedCount++;
+    }
+
+    /// @dev Computes the next gen0 auction starting price, given
+    ///  the average of the past 5 prices + 50%.
+    function _computeNextGen0Price() internal view returns (uint256) {
+        uint256 avePrice = saleAuction.averageGen0SalePrice();
+
+        // Sanity check to ensure we don't overflow arithmetic
+        require(avePrice == uint256(uint128(avePrice)));
+
+        uint256 nextPrice = avePrice + (avePrice / 2);
+
+        // We never auction for less than starting price
+        if (nextPrice < GEN0_STARTING_PRICE) {
+            nextPrice = GEN0_STARTING_PRICE;
+        }
+
+        return nextPrice;
+    }
+}
+```
+
+

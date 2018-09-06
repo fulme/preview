@@ -28,15 +28,15 @@
 其核心技术类似于比特币，可参考[比特币核心架构](https://github.com/fulme/preview/blob/master/doc/blockchain/README.md)。
 以太坊通常被称为区块链-2.0应用，相对于比特币网络，主要有一下几个方面的升级、改造。
 
+- 图灵完备
+  比特币为了防止程序无限循环，对脚本语言做了严格的限制，只能使用非常有限的操作。
+  以太坊脚本是图灵完备的，通过引入`gas`解决无限循环问题，理论上可以实现任何可计算的状态转换。
+  
 - 区块产生速度及并发
   比特币的并发6.7笔/秒，每10分钟一个区块，以太坊调整了区块大小及15秒的出块速度，并发达到25笔/秒。
   
 - 内存依赖
   比特币挖矿，催生了专用集成电路的矿机产业，以太坊在算法上强依赖大内存，一定程度避免类似的问题。
-  
-- 图灵完备
-  比特币为了防止程序无限循环，对脚本语言做了严格的限制，只能使用非常有限的操作。
-  以太坊脚本是图灵完备的，通过引入`gas`解决无限循环问题，理论上可以实现任何可计算的状态转换。
 
 # 网络部署
 ## 源码编译
@@ -209,17 +209,14 @@ app.post('/transfer', (req, res) => {
       if (answers[msg.sender] == 0 && _answer) { //haven't answered yet
         answers[msg.sender] = 1; //they vote true
         trues += 1;
-      }
-      else if (answers[msg.sender] == 0 && !_answer) {
+      } else if (answers[msg.sender] == 0 && !_answer) {
         answers[msg.sender] = 2; //falsity
         falses += 1;
-      }
-      else if (answers[msg.sender] == 2 && _answer) { // false switching to true
+      } else if (answers[msg.sender] == 2 && _answer) { // false switching to true
         answers[msg.sender] = 1; //true
         trues += 1;
         falses -= 1;
-      }
-      else if (answers[msg.sender] == 1 && !_answer) { // true switching to false
+      } else if (answers[msg.sender] == 1 && !_answer) { // true switching to false
         answers[msg.sender] = 2; //falsity
         trues -= 1;
         falses += 1;
@@ -295,7 +292,7 @@ contract ERC721 {
 ```
 
 ## 合约部署
-用`solidity`编写的合约还是高级语言代码，要部署到以太坊网络，需要一些列的编译、转换。
+以太坊虚拟机能执行的是`EVM`字节码，用`solidity`编写的合约还是高级语言代码，要部署到以太坊网络，需要一些列的编译、转换。
 好在已经有很多现成的工具，可以很方便地自动完成这个复杂的过程。
 部署的方式很多，下面介绍一种简单易用的部署方式：[在线部署](http://remix.ethereum.org/#optimize=false&version=builtin)，如果无法访问，可以[在本地启server](https://github.com/ethereum/remix-ide)。
 以太坊网络上的交易是需要消耗`gas`的（即以太币），所以需要拥有控制权的以太坊账号，对于普通用户这里需要安装一个[metamask浏览器插件](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)。
@@ -340,34 +337,23 @@ contract Pausable is Ownable {
 - 修改合约地址
 ```solidity
 contract KittyCore is KittyMinting {
-    // Set in case the core contract is broken and an upgrade is required
     address public newContractAddress;
 
-    /// @notice Creates the main CryptoKitties smart contract instance.
     function KittyCore() public {
-        // Starts paused.
         paused = true;
 
-        // the creator of the contract is the initial CEO
         ceoAddress = msg.sender;
 
-        // the creator of the contract is also the initial COO
         cooAddress = msg.sender;
 
         // start with the mythical kitten 0 - so we don't have generation-0 parent issues
         _createKitty(0, 0, 0, uint256(-1), address(0));
     }
     function setNewAddress(address _v2Address) external onlyCEO whenPaused {
-        // See README.md for updgrade plan
         newContractAddress = _v2Address;
         ContractUpgrade(_v2Address);
     }
-
-    /// @dev Override unpause so it requires all external contract addresses
-    ///  to be set before contract can be unpaused. Also, we can't have
-    ///  newContractAddress set either, because then the contract was upgraded.
-    /// @notice This is public rather than external so we can call super.unpause
-    ///  without using an expensive CALL.
+    
     function unpause() public onlyCEO whenPaused {
         require(saleAuction != address(0));
         require(siringAuction != address(0));
@@ -433,43 +419,6 @@ contract KittyMinting is KittyAuction {
 
         promoCreatedCount++;
         _createKitty(0, 0, 0, _genes, kittyOwner);
-    }
-
-    /// @dev Creates a new gen0 kitty with the given genes and
-    ///  creates an auction for it.
-    function createGen0Auction(uint256 _genes) external onlyCOO {
-        require(gen0CreatedCount < GEN0_CREATION_LIMIT);
-
-        uint256 kittyId = _createKitty(0, 0, 0, _genes, address(this));
-        _approve(kittyId, saleAuction);
-
-        saleAuction.createAuction(
-            kittyId,
-            _computeNextGen0Price(),
-            0,
-            GEN0_AUCTION_DURATION,
-            address(this)
-        );
-
-        gen0CreatedCount++;
-    }
-
-    /// @dev Computes the next gen0 auction starting price, given
-    ///  the average of the past 5 prices + 50%.
-    function _computeNextGen0Price() internal view returns (uint256) {
-        uint256 avePrice = saleAuction.averageGen0SalePrice();
-
-        // Sanity check to ensure we don't overflow arithmetic
-        require(avePrice == uint256(uint128(avePrice)));
-
-        uint256 nextPrice = avePrice + (avePrice / 2);
-
-        // We never auction for less than starting price
-        if (nextPrice < GEN0_STARTING_PRICE) {
-            nextPrice = GEN0_STARTING_PRICE;
-        }
-
-        return nextPrice;
     }
 }
 ```

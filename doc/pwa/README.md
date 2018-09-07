@@ -129,13 +129,13 @@ google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)
 ```
 
 #### 第二步，推送消息
-当业务有消息需要通知用户的时候，需要调用一个`push server`的`API`来实现。
+当业务有消息需要通知用户的时候，需要调用一个`push service`的`API`来实现。
 这里我们需要理解几个问题：
-1. **第一个问题：** 什么是`push server`，又是谁提供`push server`服务？    
-`push server`就是接受网络请求，并把请求推送到合适的浏览器，简单的说就是一个消息转发服务。
-浏览器可以使用任何的`push server`，由浏览器自动决定，不受业务控制，但没关系，因为每一个`push server`提供完全相同的`API`。
+1. **第一个问题：** 什么是`push service`，又是谁提供`push service`服务？    
+`push service`就是接受网络请求，并把请求推送到合适的浏览器，简单的说就是一个消息转发服务。
+浏览器可以使用任何的`push service`，由浏览器自动决定，不受业务控制，但没关系，因为每一个`push service`提供完全相同的`API`。
 上面讲到，用户订阅成功后会得到一个`subscription`对象，此对象中的`endpoint`就是此次订阅对应的`API`地址，业务后端只需要调用这个地址的接口即可。
-至于谁来提供`push server`，因为是标准化的协议，所以理论上谁都可以提供，如何实现可以参考[web push protocol](https://tools.ietf.org/html/draft-ietf-webpush-protocol-12)
+至于谁来提供`push service`，因为是标准化的协议，所以理论上谁都可以提供，如何实现可以参考[web push protocol](https://tools.ietf.org/html/draft-ietf-webpush-protocol-12)
 
 2. **第二个问题：** `API`是什么样的？    
 接口调用要求传递特定的`header`头部信息，及相关的二进制数据体，涉及到一系列的加密算法，实现相对比较繁琐。
@@ -146,7 +146,7 @@ google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)
 - ...
 
 3. **第三个问题：** `API`能做什么？    
-`API`是提供业务推送消息到用户的途径，并保证数据传输的安全。因为`push server`可以是任何人提供，所以数据必须加密。
+`API`是提供业务推送消息到用户的途径，并保证数据传输的安全。因为`push service`可以是任何人提供，所以数据必须加密。
 ![server-to-push-service.svg](./img/server-to-push-service.svg)
 
 #### 浏览器响应推送事件

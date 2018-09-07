@@ -42,7 +42,7 @@ Service worker作为工作线程运行，不能访问`DOM`，只能由`HTTPS`承
 - 在客户端进行CoffeeScript，LESS，CJS/AMD等模块编译和依赖管理（用于开发目的）
 
 接口层提供了`fetch`钩子函数及`cache`相关的存、取接口，可以自行设计缓存策略。
-google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)，提供了非常易用的接口调用及强大的可扩展性，可以免去大量的封装工作。
+google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)，提供了非常易用的接口调用及强大的可扩展性，可以免去大量的封装工作，只需要专注于策略的编写。
 
 *PS: 这里有个坑，不要使用默认的实现，谷歌把整套代码部署在了自己的CDN上按需加载，这会泄露业务的统计数据，更重要的是大多数国内用户会被墙*
 

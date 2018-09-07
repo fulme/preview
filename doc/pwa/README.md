@@ -9,42 +9,9 @@ PWA 的主要特点：
 - **粘性** - 具有沉浸式的用户体验，可以安装到桌面，全屏展示，离线推送消息
 
 涉及到的新方法/API如下：
-- [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
-- [Web Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)
 - [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest)
-
-## Service Worker
-Service worker是一个注册在指定源和路径下的事件驱动的工作线程。
-它采用JavaScript控制关联的页面，可以拦截并修改资源请求。
-Service worker作为工作线程运行，不能访问`DOM`，只能由`HTTPS`承载。
-
-### 生命周期
-- **注册** - 页面适当位置进行注册，避免影响业务代码的加载/执行
-```javascript
-  window.addEventListener('load', function() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js', {scope: './'});
-      }
-  });
-```
-- **下载** - 用户首次访问service worker控制的网站或页面时，service worker会立刻被下载，之后至少每24小时它会被下载一次
-- **安装** - 下载完成后立即进行安装
-- **激活** - 首次安装立即激活，之后的的安装需要等待旧的worker没有页面时候的时候才会停止旧的激活新的，也可以通过接口直接接活
-- **停止** - 页面关闭后会停止，再次打开或者有消息推送的时候会被激活
-
-### 作用
-- 后台数据同步
-- 资源预加载
-- 后台服务钩子
-- 数据多页面同步
-- 响应来自其它源的资源请求
-- 自定义模板用于特定URL模式
-- 在客户端进行CoffeeScript，LESS，CJS/AMD等模块编译和依赖管理（用于开发目的）
-
-接口层提供了`fetch`钩子函数及`cache`相关的存、取接口，可以自行设计缓存策略。
-google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)，提供了非常易用的接口调用及强大的可扩展性，可以免去大量的封装工作，只需要专注于策略的编写。
-
-*PS: 这里有个坑，不要使用默认的实现，谷歌把整套代码部署在了自己的CDN上按需加载，这会泄露业务的统计数据，更重要的是大多数国内用户会被墙*
+- [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
+- [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)
 
 ## Web App Manifest
 - 引入`manifest`文件
@@ -99,7 +66,40 @@ google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)
   }
 ```
 
-## Web Push Notification
+## Service Worker
+Service worker是一个注册在指定源和路径下的事件驱动的工作线程。
+它采用JavaScript控制关联的页面，可以拦截并修改资源请求。
+Service worker作为工作线程运行，不能访问`DOM`，只能由`HTTPS`承载。
+
+### 生命周期
+- **注册** - 页面适当位置进行注册，避免影响业务代码的加载/执行
+```javascript
+  window.addEventListener('load', function() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js', {scope: './'});
+      }
+  });
+```
+- **下载** - 用户首次访问service worker控制的网站或页面时，service worker会立刻被下载，之后至少每24小时它会被下载一次
+- **安装** - 下载完成后立即进行安装
+- **激活** - 首次安装立即激活，之后的的安装需要等待旧的worker没有页面时候的时候才会停止旧的激活新的，也可以通过接口直接接活
+- **停止** - 页面关闭后会停止，再次打开或者有消息推送的时候会被激活
+
+### 作用
+- 后台数据同步
+- 资源预加载
+- 后台服务钩子
+- 数据多页面同步
+- 响应来自其它源的资源请求
+- 自定义模板用于特定URL模式
+- 在客户端进行CoffeeScript，LESS，CJS/AMD等模块编译和依赖管理（用于开发目的）
+
+接口层提供了`fetch`钩子函数及`cache`相关的存、取接口，可以自行设计缓存策略。
+google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)，提供了非常易用的接口调用及强大的可扩展性，可以免去大量的封装工作，只需要专注于策略的编写。
+
+*PS: 这里有个坑，不要使用默认的实现，谷歌把整套代码部署在了自己的CDN上按需加载，这会泄露业务的统计数据，更重要的是大多数国内用户会被墙*
+
+## Push Notification
 ### 工作原理
 从顶层视角来看，主要分为三个步骤：
 1. 客户端代码引导用户订阅消息推送
@@ -153,11 +153,13 @@ google开源了强大的框架[workbox](https://github.com/GoogleChrome/workbox)
 `service worker`通过监听`push`事件，得到消息体，并可以通过桌面通知`notification`通知用户
 ![](./img/push-service-to-sw-event.svg)
 
+### 完整的过程
+![](./img/push_api.png)
 
 ## 浏览器支持现状
 - service worker
-![service worker compatibility](./img/service-worker-compatibility.png)
+![service worker API compatibility](./img/service-worker-compatibility.png)
 - Web App Manifest
 ![Web App Manifest compatibility](./img/web-app-manifest-compatibility.png)
 - Web Push
-![Web Push compatibility](./img/web-push-compatibility.png)
+![Push API compatibility](./img/web-push-compatibility.png)

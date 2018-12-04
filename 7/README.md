@@ -65,7 +65,7 @@
 - H5编译器
 ![](https://fulme.github.io/preview/7/wepy-web-compiler.png)
 - 小程序编译器
-![](https://fulme.github.io/preview/7/wepy-app-compiler.png)
+![](https://fulme.github.io/preview/7/wepe-app-compiler.png)
 - 效果展示
 ![](https://fulme.github.io/preview/7/wbmp-demo.png)
 

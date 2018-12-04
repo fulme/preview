@@ -29,7 +29,7 @@
 ![](https://fulme.github.io/preview/7/monitor.png)
 上图是常规的问题解决流程，有了监控系统以后，定时看一下后台的错误日志就能解决绝大部分的问题，极大提升问题的解决速度。
 
--效果展示
+- 效果展示
 ![](https://fulme.github.io/preview/7/load.png)
 
 ## 多客服系统
